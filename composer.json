@@ -1,0 +1,20 @@
+{
+  "name": "kettari/amocrm-api",
+  "description": "API for the amoCRM",
+  "authors": [
+    {
+      "name": "Andrei Kornienko",
+      "email": "ant@kaula.ru",
+      "homepage": "https://github.com/kettari"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "AmoCrm\\Api\\": "src/"
+    }
+  },
+  "prefer-stable": true
+}

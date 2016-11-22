@@ -1,6 +1,7 @@
 {
   "name": "kettari/amocrm-api",
   "description": "API for the amoCRM",
+  "license": "MIT",
   "authors": [
     {
       "name": "Andrei Kornienko",

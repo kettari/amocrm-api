@@ -1,0 +1,98 @@
+{
+  "response": {
+    "contacts": [
+      {
+        "id": 32736017,
+        "name": "undefined",
+        "last_modified": 1469179020,
+        "account_id": 9718704,
+        "date_create": 1469179020,
+        "created_user_id": 903900,
+        "responsible_user_id": 903900,
+        "group_id": 0,
+        "closest_task": 0,
+        "linked_company_id": null,
+        "company_name": "",
+        "tags": [],
+        "type": "contact",
+        "custom_fields": [
+          {
+            "id": "924140",
+            "name": "Ссылка в Талланто",
+            "values": [
+              {
+                "value": "http://kaula.tallanto.ru/index.php?module=Contacts&action=DetailView&record=7fdf97cc-35f6-fb33-127b-57863d174508"
+              }
+            ]
+          },
+          {
+            "id": "683068",
+            "name": "Телефон",
+            "code": "PHONE",
+            "values": [
+              {
+                "value": "79264354570",
+                "enum": "1641794"
+              }
+            ]
+          }
+        ],
+        "linked_leads_id": [
+          "12465285"
+        ]
+      },
+      {
+        "id": 32736395,
+        "name": "Геннадий",
+        "last_modified": 1469180612,
+        "account_id": 9718704,
+        "date_create": 1469180451,
+        "created_user_id": 903900,
+        "responsible_user_id": 903900,
+        "group_id": 0,
+        "closest_task": 0,
+        "linked_company_id": "0",
+        "company_name": "",
+        "tags": [],
+        "type": "contact",
+        "custom_fields": [
+          {
+            "id": "924140",
+            "name": "Ссылка в Талланто",
+            "values": [
+              {
+                "value": "http://kaula.tallanto.ru/index.php?module=Contacts&action=DetailView&record=7fdf97cc-35f6-fb33-127b-57863d174508"
+              }
+            ]
+          },
+          {
+            "id": "683068",
+            "name": "Телефон",
+            "code": "PHONE",
+            "values": [
+              {
+                "value": "79264354570",
+                "enum": "1641794"
+              }
+            ]
+          },
+          {
+            "id": "683070",
+            "name": "Email",
+            "code": "EMAIL",
+            "values": [
+              {
+                "value": "g.surovtsev@gmail.com",
+                "enum": "1641802"
+              }
+            ]
+          }
+        ],
+        "linked_leads_id": [
+          "12465531"
+        ]
+      }
+    ],
+    "server_time": 1469533758
+  }
+}

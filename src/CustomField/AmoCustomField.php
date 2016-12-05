@@ -6,7 +6,7 @@
  * Time: 15:02
  */
 
-namespace AmoCrm\Api\CustomFields;
+namespace AmoCrm\Api\CustomField;
 
 
 /**

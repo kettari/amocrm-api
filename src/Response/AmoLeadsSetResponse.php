@@ -9,7 +9,7 @@
 namespace AmoCrm\Api\Response;
 
 
-use AmoCrm\Api\Objects\AmoLeadObject;
+use AmoCrm\Api\Object\AmoLeadObject;
 
 class AmoLeadsSetResponse extends AmoEntitySetResponse {
 

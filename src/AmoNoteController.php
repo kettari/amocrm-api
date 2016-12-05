@@ -8,7 +8,7 @@
 
 namespace AmoCrm\Api;
 
-use AmoCrm\Api\Objects\AmoNoteObject;
+use AmoCrm\Api\Object\AmoNoteObject;
 
 class AmoNoteController extends AmoEntityController {
 
@@ -34,6 +34,15 @@ class AmoNoteController extends AmoEntityController {
     $data = [];
     /** @var AmoNoteObject $note */
     foreach ($notes as $note) {
+      if (!($note instanceof AmoNoteObject)) {
+        $this->logger->error('Expected AmoNoteObject, got {unexpected_class}',
+          [
+            'unexpected_class' => get_class($note),
+            'source'           => __CLASS__ . '->' . __FUNCTION__,
+          ]);
+        continue;
+      }
+
       if (!is_null($note->getId())) {
         $data['request']['notes']['update'][] = $note->getArray();
       }
@@ -45,8 +54,8 @@ class AmoNoteController extends AmoEntityController {
     $this->buffer = array_merge($this->buffer, $data);
 
     // Add debug log message
-    $this->logger->debug(sprintf('Notes addMultiple(): <pre>%s</pre>',
-      print_r($this->buffer, TRUE)), ['source' => __CLASS__ . '->' . __FUNCTION__]);
+    /*$this->logger->debug(sprintf('Notes addMultiple(): <pre>%s</pre>',
+      print_r($this->buffer, TRUE)), ['source' => __CLASS__ . '->' . __FUNCTION__]);*/
 
     return $this;
   }

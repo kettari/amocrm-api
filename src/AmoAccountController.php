@@ -8,8 +8,8 @@
 
 namespace AmoCrm\Api;
 
-use AmoCrm\Api\Objects\AmoPipelineObject;
-use AmoCrm\Api\Objects\AmoUserObject;
+use AmoCrm\Api\Object\AmoPipelineObject;
+use AmoCrm\Api\Object\AmoUserObject;
 
 
 /**

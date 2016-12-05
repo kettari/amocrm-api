@@ -7,6 +7,7 @@
  */
 
 namespace AmoCrm\Api;
+use Monolog\Logger;
 
 /**
  * Class AmoBurstController
@@ -56,12 +57,12 @@ class AmoBurstController extends AmoLoggable {
   /**
    * Return instance of this singleton
    *
-   * @param string $logentries_token
+   * @param Logger $logger
    * @return \AmoCrm\Api\AmoBurstController|null
    */
-  public static function getInstance($logentries_token) {
+  public static function getInstance($logger) {
     if (is_null(self::$_instance)) {
-      self::$_instance = new AmoBurstController($logentries_token);
+      self::$_instance = new AmoBurstController($logger);
     }
     return self::$_instance;
   }

@@ -10,7 +10,7 @@ namespace AmoCrm\Api\Response;
 
 
 
-use AmoCrm\Api\Objects\AmoNoteObject;
+use AmoCrm\Api\Object\AmoNoteObject;
 
 
 class AmoNotesSetResponse extends AmoEntitySetResponse {

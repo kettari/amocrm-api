@@ -9,7 +9,7 @@
 namespace AmoCrm\Api\Response;
 
 
-use AmoCrm\Api\Objects\AmoTaskObject;
+use AmoCrm\Api\Object\AmoTaskObject;
 
 class AmoTasksListResponse extends AmoBaseResponse {
 

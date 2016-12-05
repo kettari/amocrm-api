@@ -8,8 +8,8 @@
 
 namespace AmoCrm\Api;
 
-use AmoCrm\Api\Objects\AmoLeadObject;
-use AmoCrm\Api\Objects\AmoLinkObject;
+use AmoCrm\Api\Object\AmoLeadObject;
+use AmoCrm\Api\Object\AmoLinkObject;
 
 /**
  * Class AmoLeadController
@@ -62,6 +62,15 @@ class AmoLeadController extends AmoEntityController {
     $data = [];
     /** @var AmoLeadObject $lead */
     foreach ($leads as $lead) {
+      if (!($lead instanceof AmoLeadObject)) {
+        $this->logger->error('Expected AmoLeadObject, got {unexpected_class}',
+          [
+            'unexpected_class' => get_class($lead),
+            'source'           => __CLASS__ . '->' . __FUNCTION__,
+          ]);
+        continue;
+      }
+
       if (!is_null($lead->getId())) {
         $data['request']['leads']['update'][] = $lead->getArray();
       }
@@ -73,8 +82,11 @@ class AmoLeadController extends AmoEntityController {
     $this->buffer = array_merge($this->buffer, $data);
 
     // Add debug log message
-    $this->logger->debug(sprintf('Leads addMultiple(): <pre>%s</pre>',
-      print_r($this->buffer, TRUE)), ['source' => __CLASS__ . '->' . __FUNCTION__]);
+    /*$this->logger->debug('Leads addMultiple()',
+      [
+        'leads'  => $this->buffer,
+        'source' => __CLASS__ . '->' . __FUNCTION__,
+      ]);*/
 
     return $this;
   }
@@ -116,8 +128,7 @@ class AmoLeadController extends AmoEntityController {
           $limit_offset += count($payload);
         }
       }
-    }
-    while (count($payload) == $limit_rows);
+    } while (count($payload) == $limit_rows);
 
     // Add log message
     $time_elapsed_secs = microtime(TRUE) - $start;
@@ -221,8 +232,7 @@ class AmoLeadController extends AmoEntityController {
           $limit_offset += count($payload);
         }
       }
-    }
-    while (count($payload) == $limit_rows);
+    } while (count($payload) == $limit_rows);
 
     return $data;
   }
@@ -271,8 +281,7 @@ class AmoLeadController extends AmoEntityController {
           $limit_offset += count($payload);
         }
       }
-    }
-    while (count($payload) == $limit_rows);
+    } while (count($payload) == $limit_rows);
 
     return $data;
   }

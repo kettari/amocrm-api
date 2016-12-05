@@ -9,14 +9,14 @@
 namespace AmoCrm\Api;
 
 
-use AmoCrm\Api\Objects\AmoUnsortedObject;
+use AmoCrm\Api\Object\AmoUnsortedObject;
 
 class AmoUnsortedController extends AmoBaseController {
 
   /**
    * Create unsorted item in the AmoCRM
    *
-   * @param \AmoCrm\Api\Objects\AmoUnsortedObject $unsorted
+   * @param \AmoCrm\Api\Object\AmoUnsortedObject $unsorted
    * @return bool
    */
   public function create(AmoUnsortedObject $unsorted) {

@@ -9,7 +9,7 @@
 namespace AmoCrm\Api\Response;
 
 
-use AmoCrm\Api\Objects\AmoLinkObject;
+use AmoCrm\Api\Object\AmoLinkObject;
 
 class AmoContactsLinksResponse extends AmoBaseResponse {
 

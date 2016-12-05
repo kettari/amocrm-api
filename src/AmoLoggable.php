@@ -8,7 +8,6 @@
 
 namespace AmoCrm\Api;
 
-use Monolog\Handler\LogEntriesHandler;
 use Monolog\Logger;
 
 class AmoLoggable {
@@ -23,10 +22,9 @@ class AmoLoggable {
   /**
    * AmoLoggable constructor.
    *
-   * @param string $logentries_token
+   * @param \Monolog\Logger $logger
    */
-  public function __construct($logentries_token) {
-    $this->logger = new Logger('amocrm_api');
-    $this->logger->pushHandler(new LogEntriesHandler($logentries_token));
+  public function __construct(Logger $logger) {
+    $this->logger = $logger;
   }
 }

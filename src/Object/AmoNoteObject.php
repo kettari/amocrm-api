@@ -6,7 +6,7 @@
  * Time: 15:21
  */
 
-namespace AmoCrm\Api\Objects;
+namespace AmoCrm\Api\Object;
 
 
 /**

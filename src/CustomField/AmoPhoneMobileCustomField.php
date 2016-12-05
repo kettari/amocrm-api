@@ -6,7 +6,7 @@
  * Time: 15:06
  */
 
-namespace AmoCrm\Api\CustomFields;
+namespace AmoCrm\Api\CustomField;
 
 
 class AmoPhoneMobileCustomField extends AmoCustomField {

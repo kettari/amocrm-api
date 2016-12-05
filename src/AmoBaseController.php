@@ -10,6 +10,7 @@ namespace AmoCrm\Api;
 
 use AmoCrm\Api\Response\AmoBaseResponse;
 use AmoCrm\Api\Response\AmoResponseFactory;
+use Monolog\Logger;
 
 /**
  * Class AmoBaseController
@@ -55,20 +56,20 @@ class AmoBaseController extends AmoLoggable {
   /**
    * AmoBaseController constructor.
    *
-   * @param string $logentries_token
+   * @param Logger $logger
    * @param string $amo_subdomain
    * @param string $amo_user_login
    * @param string $amo_api_hash
    */
-  public function __construct($logentries_token, $amo_subdomain, $amo_user_login,
+  public function __construct($logger, $amo_subdomain, $amo_user_login,
                               $amo_api_hash) {
-    parent::__construct($logentries_token);
+    parent::__construct($logger);
 
     $this->subdomain = $amo_subdomain;
     $this->user_login = $amo_user_login;
     $this->api_hash = $amo_api_hash;
 
-    $this->burst_controller = AmoBurstController::getInstance($logentries_token);
+    $this->burst_controller = AmoBurstController::getInstance($logger);
   }
 
   /**
@@ -128,29 +129,30 @@ class AmoBaseController extends AmoLoggable {
     $decoded_result = print_r($decoded_result, TRUE);
 
     // Add debug log message
-    $this->logger->debug(sprintf('Sent AmoCRM API request at %.2f: method=%s, link=%s. Data: <pre>%s</pre>'
-      . '<br />Response: HTTP code=%s, payload:<pre>%s</pre>',
-      microtime(TRUE),
-      $method,
-      $link,
-      $message_data,
-      $http_code,
-      $decoded_result
-    ), ['source' => __CLASS__ . '->' . __FUNCTION__]);
+    $this->logger->debug(sprintf('Sent AmoCRM API request at %.2f', microtime(TRUE)),
+      [
+        'method'         => $method,
+        'link'           => $link,
+        'data'           => $message_data,
+        'http_code'      => $http_code,
+        'decoded_result' => $decoded_result,
+        'source'         => __CLASS__ . '->' . __FUNCTION__,
+      ]);
 
     // Build implementation of AmoBaseResponse or one of it's ancestors
     $amo_response = AmoResponseFactory::build($link, $http_code, $this->last_raw_result);
     if ($amo_response->isErrorFlag()) {
       // Add error log message
-      $this->logger->error(sprintf('AmoCRM API request returned error: %s. '
-        . 'Details follow: method=%s, link=%s. Data: <pre>%s</pre>'
-        . '<br />Response: HTTP code=%s, payload:<pre>%s</pre>',
-        $amo_response->getErrorMessage(),
-        $method,
-        $link,
-        $message_data,
-        $http_code,
-        $decoded_result), ['source' => __CLASS__ . '->' . __FUNCTION__]);
+      $this->logger->error('AmoCRM API request returned error',
+        [
+          'error_message'  => $amo_response->getErrorMessage(),
+          'method'         => $method,
+          'link'           => $link,
+          'data'           => $message_data,
+          'http_code'      => $http_code,
+          'decoded_result' => $decoded_result,
+          'source'         => __CLASS__ . '->' . __FUNCTION__,
+        ]);
     }
 
     return $amo_response;

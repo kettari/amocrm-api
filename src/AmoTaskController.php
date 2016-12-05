@@ -9,7 +9,7 @@
 namespace AmoCrm\Api;
 
 
-use AmoCrm\Api\Objects\AmoTaskObject;
+use AmoCrm\Api\Object\AmoTaskObject;
 
 /**
  * Class AmoTaskController

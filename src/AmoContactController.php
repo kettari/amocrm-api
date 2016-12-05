@@ -8,9 +8,9 @@
 
 namespace AmoCrm\Api;
 
-use AmoCrm\Api\Objects\AmoContactObject;
+use AmoCrm\Api\Object\AmoContactObject;
 
-use AmoCrm\Api\Objects\AmoLinkObject;
+use AmoCrm\Api\Object\AmoLinkObject;
 
 
 /**
@@ -71,6 +71,15 @@ class AmoContactController extends AmoEntityController {
     $data = [];
     /** @var AmoContactObject $contact */
     foreach ($contacts as $contact) {
+      if (!($contact instanceof AmoContactObject)) {
+        $this->logger->error('Expected AmoContactObject, got {unexpected_class}',
+          [
+            'unexpected_class' => get_class($contact),
+            'source'           => __CLASS__ . '->' . __FUNCTION__,
+          ]);
+        continue;
+      }
+
       if (!is_null($contact->getId())) {
         $data['request']['contacts']['update'][] = $contact->getArray();
       }
@@ -82,8 +91,8 @@ class AmoContactController extends AmoEntityController {
     $this->buffer = array_merge($this->buffer, $data);
 
     // Add debug log message
-    $this->logger->debug(sprintf('Contacts addMultiple(): <pre>%s</pre>',
-      print_r($this->buffer, TRUE)), ['source' => __CLASS__ . '->' . __FUNCTION__]);
+    /*$this->logger->debug(sprintf('Contacts addMultiple(): <pre>%s</pre>',
+      print_r($this->buffer, TRUE)), ['source' => __CLASS__ . '->' . __FUNCTION__]);*/
 
     return $this;
   }

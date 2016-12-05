@@ -6,7 +6,7 @@
  * Time: 16:18
  */
 
-namespace AmoCrm\Api\Objects;
+namespace AmoCrm\Api\Object;
 
 /**
  * Class AmoUnsortedObject

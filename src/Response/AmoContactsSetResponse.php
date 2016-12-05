@@ -9,7 +9,7 @@
 namespace AmoCrm\Api\Response;
 
 
-use AmoCrm\Api\Objects\AmoContactObject;
+use AmoCrm\Api\Object\AmoContactObject;
 
 class AmoContactsSetResponse extends AmoEntitySetResponse {
 

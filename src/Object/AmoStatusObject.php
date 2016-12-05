@@ -6,7 +6,7 @@
  * Time: 17:02
  */
 
-namespace AmoCrm\Api\Objects;
+namespace AmoCrm\Api\Object;
 
 /**
  * Class AmoStatusObject

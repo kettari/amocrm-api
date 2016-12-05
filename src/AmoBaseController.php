@@ -129,7 +129,7 @@ class AmoBaseController extends AmoLoggable {
     $decoded_result = print_r($decoded_result, TRUE);
 
     // Add debug log message
-    $this->logger->debug(sprintf('Sent AmoCRM API request at %.2f', microtime(TRUE)),
+    /*$this->logger->debug(sprintf('Sent AmoCRM API request at %.2f', microtime(TRUE)),
       [
         'method'         => $method,
         'link'           => $link,
@@ -137,7 +137,7 @@ class AmoBaseController extends AmoLoggable {
         'http_code'      => $http_code,
         'decoded_result' => $decoded_result,
         'source'         => __CLASS__ . '->' . __FUNCTION__,
-      ]);
+      ]);*/
 
     // Build implementation of AmoBaseResponse or one of it's ancestors
     $amo_response = AmoResponseFactory::build($link, $http_code, $this->last_raw_result);

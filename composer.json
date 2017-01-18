@@ -15,7 +15,7 @@
   },
   "autoload": {
     "psr-4": {
-      "AmoCrm\\Api\\": "src/"
+      "AmoCrm\\Client\\": "src/"
     }
   },
   "prefer-stable": true

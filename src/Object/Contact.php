@@ -8,7 +8,6 @@
 
 namespace AmoCrm\Client\Object;
 
-
 use AmoCrm\Client\CustomField\EmailCustomField;
 use AmoCrm\Client\CustomField\EmailFieldFactory;
 use AmoCrm\Client\CustomField\FieldConfig;
@@ -196,6 +195,166 @@ class Contact {
     }
 
     return $result;
+  }
+
+  /**
+   * @return string
+   */
+  public function getId() {
+    return $this->id;
+  }
+
+  /**
+   * @param string $id
+   * @return Contact
+   */
+  public function setId($id) {
+    $this->id = $id;
+    return $this;
+  }
+
+  /**
+   * @return string
+   */
+  public function getName() {
+    return $this->name;
+  }
+
+  /**
+   * @param string $name
+   * @return Contact
+   */
+  public function setName($name) {
+    $this->name = $name;
+    return $this;
+  }
+
+  /**
+   * @return array
+   */
+  public function getPhones() {
+    return $this->phones;
+  }
+
+  /**
+   * @param array $phones
+   * @return Contact
+   */
+  public function setPhones($phones) {
+    $this->phones = $phones;
+    return $this;
+  }
+
+  /**
+   * @return array
+   */
+  public function getEmails() {
+    return $this->emails;
+  }
+
+  /**
+   * @param array $emails
+   * @return Contact
+   */
+  public function setEmails($emails) {
+    $this->emails = $emails;
+    return $this;
+  }
+
+  /**
+   * @return array
+   */
+  public function getTags() {
+    return $this->tags;
+  }
+
+  /**
+   * @param array $tags
+   * @return Contact
+   */
+  public function setTags($tags) {
+    $this->tags = $tags;
+    return $this;
+  }
+
+  /**
+   * @return int
+   */
+  public function getDateCreate() {
+    return $this->date_create;
+  }
+
+  /**
+   * @param int $date_create
+   * @return Contact
+   */
+  public function setDateCreate($date_create) {
+    $this->date_create = $date_create;
+    return $this;
+  }
+
+  /**
+   * @return int
+   */
+  public function getResponsibleUserId() {
+    return $this->responsible_user_id;
+  }
+
+  /**
+   * @param int $responsible_user_id
+   * @return Contact
+   */
+  public function setResponsibleUserId($responsible_user_id) {
+    $this->responsible_user_id = $responsible_user_id;
+    return $this;
+  }
+
+  /**
+   * @return array
+   */
+  public function getLinkedLeadsId() {
+    return $this->linked_leads_id;
+  }
+
+  /**
+   * @param array $linked_leads_id
+   * @return Contact
+   */
+  public function setLinkedLeadsId($linked_leads_id) {
+    $this->linked_leads_id = $linked_leads_id;
+    return $this;
+  }
+
+  /**
+   * @return string
+   */
+  public function getRequestId() {
+    return $this->request_id;
+  }
+
+  /**
+   * @param string $request_id
+   * @return Contact
+   */
+  public function setRequestId($request_id) {
+    $this->request_id = $request_id;
+    return $this;
+  }
+
+  /**
+   * @return string
+   */
+  public function getHash() {
+    return $this->hash;
+  }
+
+  /**
+   * @param string $hash
+   * @return Contact
+   */
+  public function setHash($hash) {
+    $this->hash = $hash;
+    return $this;
   }
 
 }

@@ -93,13 +93,13 @@ class Request {
       'uri'       => $this->getUri(),
     ]);
     $this->logger->debug('amoCRM request and response details', [
-      'post_fields' => ('post' == $http_method) ? substr(print_r($params, TRUE), 0, 512) : NULL,
-      'response'    => substr(print_r($curl_result, TRUE), 0, 512),
+      'post_fields' => ('post' == strtolower($http_method)) ? substr(print_r($params, TRUE), 0, 2048) : NULL,
+      'response'    => substr(print_r($curl_result, TRUE), 0, 2048),
     ]);
 
     // Check HTTP code
     if ((200 != $http_code) && (204 != $http_code)) {
-      throw new \HttpResponseException(sprintf('amoCRM server returned HTTP code %d for URI "%s"',
+      throw new \Exception(sprintf('amoCRM server returned HTTP code %d for URI "%s"',
         $http_code, $this->getUri()));
     }
     elseif (200 == $http_code) {
@@ -134,7 +134,7 @@ class Request {
     curl_setopt($this->handler, CURLOPT_SSL_VERIFYPEER, 0);
     curl_setopt($this->handler, CURLOPT_SSL_VERIFYHOST, 0);
 
-    $this->logger->debug(sprintf('Created cURL handler with uri "{uri}"', ['uri' => $uri]));
+    $this->logger->debug('Created cURL handler with uri "{uri}"', ['uri' => $uri]);
 
     return $this->handler;
   }

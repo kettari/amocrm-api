@@ -22,11 +22,11 @@ class EmailFieldFactory {
   public static function build(FieldConfig $field_config, $enum_id, $value) {
     switch ($enum_id) {
       case $field_config->getFieldEmailEnumPriv():
-        return new PrivateEmailCustomField($field_config->getFieldPhoneId(), $field_config->getFieldEmailEnumPriv(), $value);
+        return new PrivateEmailCustomField($field_config->getFieldEmailId(), $field_config->getFieldEmailEnumPriv(), $value);
       case $field_config->getFieldEmailEnumWork():
-        return new WorkEmailCustomField($field_config->getFieldPhoneId(), $field_config->getFieldEmailEnumWork(), $value);
+        return new WorkEmailCustomField($field_config->getFieldEmailId(), $field_config->getFieldEmailEnumWork(), $value);
       case $field_config->getFieldEmailEnumOther():
-        return new OtherEmailCustomField($field_config->getFieldPhoneId(), $field_config->getFieldEmailEnumOther(), $value);
+        return new OtherEmailCustomField($field_config->getFieldEmailId(), $field_config->getFieldEmailEnumOther(), $value);
       default:
         throw new CustomFieldUnknownEnumException(sprintf('Unknown custom email field enum = %s', $enum_id));
         break;

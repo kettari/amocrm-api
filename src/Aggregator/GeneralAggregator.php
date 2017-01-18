@@ -11,14 +11,10 @@ namespace AmoCrm\Client\Aggregator;
 
 use AmoCrm\Client\CustomField\FieldConfig;
 use AmoCrm\Client\Request;
+use ArrayObject;
 use Monolog\Logger;
 
-class GeneralAggregator {
-
-  /**
-   * @var \ArrayIterator
-   */
-  protected $items;
+abstract class GeneralAggregator extends ArrayObject {
 
   /**
    * Monolog logger
@@ -48,7 +44,24 @@ class GeneralAggregator {
     $this->logger = $logger;
     $this->field_config = $field_config;
     $this->request = $request;
-    $this->items = new \ArrayIterator();
   }
+
+  /**
+   * Clear items
+   */
+  public function clear() {
+    $iterator = $this->getIterator();
+    foreach ($iterator as $key => $item) {
+      $iterator->offsetUnset($key);
+    }
+  }
+
+  /**
+   * Search for entities in the amoCRM
+   *
+   * @param $query
+   * @return mixed
+   */
+  abstract public function search($query);
 
 }

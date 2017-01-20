@@ -87,12 +87,9 @@ class Request {
     $curl_result = curl_exec($handler);
     $http_code = curl_getinfo($handler, CURLINFO_HTTP_CODE);
 
-    // Add log
-    $this->logger->info('amoCRM server returned HTTP code {http_code} for URI "{uri}"', [
+    // Add debug log
+    $this->logger->debug('amoCRM server returned HTTP code {http_code}', [
       'http_code' => $http_code,
-      'uri'       => $this->getUri(),
-    ]);
-    $this->logger->debug('amoCRM request and response details', [
       'post_fields' => ('post' == strtolower($http_method)) ? substr(print_r($params, TRUE), 0, 2048) : NULL,
       'response'    => substr(print_r($curl_result, TRUE), 0, 2048),
     ]);
@@ -134,7 +131,9 @@ class Request {
     curl_setopt($this->handler, CURLOPT_SSL_VERIFYPEER, 0);
     curl_setopt($this->handler, CURLOPT_SSL_VERIFYHOST, 0);
 
-    $this->logger->debug('Created cURL handler with uri "{uri}"', ['uri' => $uri]);
+    $this->logger->debug('Created cURL handler with URI "{uri}"', [
+      'uri' => preg_replace('/USER_HASH=([0-9a-f]{32})/i', 'USER_HASH=HIDDEN', $uri),
+    ]);
 
     return $this->handler;
   }

@@ -49,6 +49,11 @@ class Request {
    */
   protected $query;
 
+  /**
+   * @var string
+   */
+  protected $id;
+
 
   /**
    * Api constructor.
@@ -150,6 +155,10 @@ class Request {
     // If query defined, concatenate it
     if (!empty($this->query)) {
       $uri .= sprintf('&query=%s', urlencode($this->query));
+    }
+    // If id defined, concatenate it
+    if (!empty($this->id)) {
+      $uri .= sprintf('&id[]=%s', urlencode($this->id));
     }
 
     return $uri;
@@ -268,6 +277,22 @@ class Request {
    */
   public function setQuery($query) {
     $this->query = $query;
+    return $this;
+  }
+
+  /**
+   * @return string
+   */
+  public function getId() {
+    return $this->id;
+  }
+
+  /**
+   * @param string $id
+   * @return $this
+   */
+  public function setId($id) {
+    $this->id = $id;
     return $this;
   }
 

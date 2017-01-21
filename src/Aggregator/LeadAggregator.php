@@ -9,8 +9,6 @@
 namespace AmoCrm\Client\Aggregator;
 
 
-use AmoCrm\Client\Exception\QueryAggregatorException;
-use AmoCrm\Client\Exception\ResponseAggregatorException;
 use AmoCrm\Client\Object\Lead;
 
 class LeadAggregator extends GeneralAggregator {
@@ -25,41 +23,36 @@ class LeadAggregator extends GeneralAggregator {
    * @throws \AmoCrm\Client\Exception\ResponseAggregatorException
    */
   public function search($query) {
-    if (empty($query)) {
-      throw new QueryAggregatorException('Query is empty');
-    }
-
     $this->clear();
-
-    // Search
-    if ($response_array = $this->request
-      ->setMethod('/private/api/v2/json/leads/list')
-      ->setQuery($query)
-      ->get()
-    ) {
-
-      if (isset($response_array['response']['leads']) && is_array($response_array['response']['leads'])) {
-        foreach ($response_array['response']['leads'] as $one_item) {
-          $this->append(new Lead($one_item, $this->field_config));
-        }
+    if ($result = parent::_search('leads', $query)) {
+      foreach ($result as $one_item) {
+        $this->append(new Lead($one_item, $this->field_config));
       }
-      else {
-        throw new ResponseAggregatorException('Bad leads response structure');
-      }
-
-      $this->logger->info('Search in leads for query "{query}" returned {results_count} result(s)', [
-        'query'         => $query,
-        'results_count' => $this->count(),
-      ]);
       return TRUE;
     }
-
-    $this->logger->info('Search in leads for query "{query}" returned empty result', ['query' => $query]);
     return FALSE;
   }
 
   /**
-   * Add lead to the amoCRM database
+   * Get the lead from the amoCRM using ID
+   *
+   * @param string $id amoCRM lead id
+   * @return bool
+   */
+  public function get($id) {
+    $this->clear();
+    if ($result = parent::_get('leads', $id)) {
+      foreach ($result as $one_item) {
+        $this->append(new Lead($one_item, $this->field_config));
+      }
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Add lead to the amoCRM database. Copy of the Lead object
+   * is added to internal storage.
    *
    * @param \AmoCrm\Client\Object\Lead $lead
    * @throws \AmoCrm\Client\Exception\ResponseAggregatorException
@@ -67,6 +60,10 @@ class LeadAggregator extends GeneralAggregator {
   public function add(Lead $lead) {
     $this->save('add', $lead);
     $this->append(clone $lead);
+    $this->logger->info('Lead "{name}" added (id={id})', [
+      'name' => $lead->getName(),
+      'id'   => $lead->getId(),
+    ]);
   }
 
   /**
@@ -77,36 +74,9 @@ class LeadAggregator extends GeneralAggregator {
    * @throws \AmoCrm\Client\Exception\ResponseAggregatorException
    */
   protected function save($operation, Lead $lead) {
-    $request = [
-      'request' => [
-        'leads' => [
-          $operation => [
-            $lead->getArray(),
-          ],
-        ],
-      ],
-    ];
-
-    if ($response_array = $this->request
-      ->setMethod('/private/api/v2/json/leads/set')
-      ->setQuery('')
-      ->post($request)
-    ) {
-
-      if (isset($response_array['response']['leads'][$operation]) && is_array($response_array['response']['leads'][$operation])) {
-        $one_item = reset($response_array['response']['leads'][$operation]);
-        $lead->setId($one_item['id']);
-      }
-      else {
-        throw new ResponseAggregatorException('Bad leads response structure');
-      }
-
-      $this->logger->info(sprintf('Lead "{lead_name}" (id={lead_id}) %sed', $operation),
-        [
-          'lead_name' => $lead->getName(),
-          'lead_id'   => $lead->getId(),
-        ]);
-
+    if ($result = parent::_save('leads', $operation, [$lead->getArray()])) {
+      $one_item = reset($result);
+      $lead->setId($one_item['id']);
     }
   }
 
@@ -118,6 +88,10 @@ class LeadAggregator extends GeneralAggregator {
    */
   public function update(Lead $lead) {
     $this->save('update', $lead);
+    $this->logger->info('Lead "{name}" updated (id={id})', [
+      'name' => $lead->getName(),
+      'id'   => $lead->getId(),
+    ]);
   }
 
 

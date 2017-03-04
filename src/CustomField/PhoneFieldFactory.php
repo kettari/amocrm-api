@@ -31,6 +31,7 @@ class PhoneFieldFactory {
         return new FaxPhoneCustomField($field_config->getFieldPhoneId(), $field_config->getFieldPhoneEnumFax(), $value);
       case $field_config->getFieldPhoneEnumOther():
         return new OtherPhoneCustomField($field_config->getFieldPhoneId(), $field_config->getFieldPhoneEnumOther(), $value);
+      // TODO: Add Phone enum WORKADD ('direct phone') or it will crash for contacts with this field filled
       default:
         throw new CustomFieldUnknownEnumException(sprintf('Unknown custom phone field enum = %s', $enum_id));
         break;

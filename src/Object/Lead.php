@@ -9,9 +9,7 @@
 namespace AmoCrm\Client\Object;
 
 
-use AmoCrm\Client\CustomField\FieldConfig;
-
-class Lead extends AbstractTimeAwareEntity {
+class Lead extends AbstractTaggableEntity {
 
   /**
    * Price of the lead
@@ -26,13 +24,6 @@ class Lead extends AbstractTimeAwareEntity {
    * @var string
    */
   protected $name = NULL;
-
-  /**
-   * Tags
-   *
-   * @var array
-   */
-  protected $tags = [];
 
   /**
    * @var integer
@@ -50,44 +41,6 @@ class Lead extends AbstractTimeAwareEntity {
    * @var string
    */
   protected $request_id = NULL;
-
-  /**
-   * AmoLeadObject constructor.
-   *
-   * @param array $data
-   * @param \AmoCrm\Client\CustomField\FieldConfig $field_config
-   */
-  public function __construct(array $data, FieldConfig $field_config = NULL) {
-    parent::__construct($data);
-
-    // Assign properties
-    foreach ($data as $key => $val) {
-      switch ($key) {
-        case 'tags':
-          $this->tags = (is_array($val)) ? $val : explode(',', $val);
-          continue;
-      }
-    }
-  }
-
-  /**
-   * Return array ready to be sent to AmoCRM
-   *
-   * @return array
-   */
-  public function toArray() {
-    // Build result array
-    $result = parent::toArray();
-
-    if (is_array($this->tags)) {
-      $result['tags'] = implode(',', $this->tags);
-    }
-    else {
-      $result['tags'] = $this->tags;
-    }
-
-    return $result;
-  }
 
   /**
    * @return float
@@ -118,22 +71,6 @@ class Lead extends AbstractTimeAwareEntity {
    */
   public function setName($name) {
     $this->name = $name;
-    return $this;
-  }
-
-  /**
-   * @return array
-   */
-  public function getTags() {
-    return $this->tags;
-  }
-
-  /**
-   * @param array $tags
-   * @return Lead
-   */
-  public function setTags($tags) {
-    $this->tags = $tags;
     return $this;
   }
 

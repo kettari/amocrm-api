@@ -37,7 +37,7 @@ abstract class AbstractTimeAwareEntity extends AbstractIdentifiableEntity {
    *
    * @var integer
    */
-  protected $created_user_id = NULL;
+  protected $created_user_id;
 
   /**
    * Contact constructor.
@@ -48,8 +48,8 @@ abstract class AbstractTimeAwareEntity extends AbstractIdentifiableEntity {
     parent::__construct($data);
 
     // Creation date - now
-    $this->date_create = is_null($this->date_create) ?: time();
-    $this->last_modified = is_null($this->last_modified) ?: time();
+    $this->date_create = $this->date_create ?: time();
+    $this->last_modified = $this->last_modified ?: time();
   }
 
   /**

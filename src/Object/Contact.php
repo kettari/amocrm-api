@@ -14,7 +14,7 @@ use AmoCrm\Client\CustomField\FieldConfig;
 use AmoCrm\Client\CustomField\PhoneCustomField;
 use AmoCrm\Client\CustomField\PhoneFieldFactory;
 
-class Contact extends AbstractTimeAwareEntity {
+class Contact extends AbstractTaggableEntity {
 
   /**
    * Contact name
@@ -38,13 +38,6 @@ class Contact extends AbstractTimeAwareEntity {
   protected $emails = [];
 
   /**
-   * Tags
-   *
-   * @var array
-   */
-  protected $tags = [];
-
-  /**
    * Linked leads IDs
    *
    * @var array
@@ -63,9 +56,6 @@ class Contact extends AbstractTimeAwareEntity {
     // Assign properties
     foreach ($data as $key => $val) {
       switch ($key) {
-        case 'tags':
-          $this->tags = (is_array($val)) ? $val : explode(',', $val);
-          continue;
         case 'custom_fields':
           $this->constructCustomFields($val, $field_config);
           continue;
@@ -128,9 +118,6 @@ class Contact extends AbstractTimeAwareEntity {
     if (count($custom_fields) > 0) {
       $result['custom_fields'] = $custom_fields;
     }
-    if (count($this->tags) > 0) {
-      $result['tags'] = implode(',', $this->tags);
-    }
 
     return $result;
   }
@@ -182,23 +169,6 @@ class Contact extends AbstractTimeAwareEntity {
    */
   public function setEmails($emails) {
     $this->emails = $emails;
-
-    return $this;
-  }
-
-  /**
-   * @return array
-   */
-  public function getTags() {
-    return $this->tags;
-  }
-
-  /**
-   * @param array $tags
-   * @return Contact
-   */
-  public function setTags($tags) {
-    $this->tags = $tags;
 
     return $this;
   }

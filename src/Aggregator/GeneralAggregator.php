@@ -90,7 +90,7 @@ abstract class GeneralAggregator extends ArrayObject {
     if (empty($id)) {
       throw new IdentifierAggregatorException('ID is empty');
     }
-    if (!in_array($entities, ['contacts', 'leads'])) {
+    if (!in_array($entities, ['contacts', 'leads', 'notes'])) {
       throw new UnknownEntityAggregatorException(sprintf('Entities "%s" is not supported', $entities));
     }
 
@@ -170,7 +170,7 @@ abstract class GeneralAggregator extends ArrayObject {
    * @throws \AmoCrm\Client\Exception\UnknownOperationAggregatorException
    */
   protected function _save($entities, $operation, $rows) {
-    if (!in_array($entities, ['contacts', 'leads'])) {
+    if (!in_array($entities, ['contacts', 'leads', 'notes'])) {
       throw new UnknownEntityAggregatorException(sprintf('Entities "%s" is not supported', $entities));
     }
     if (!in_array($operation, ['add', 'update'])) {

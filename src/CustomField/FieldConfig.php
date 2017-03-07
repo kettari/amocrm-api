@@ -15,6 +15,7 @@ class FieldConfig {
   protected $field_phone_id;
   protected $field_phone_enum_mob;
   protected $field_phone_enum_work;
+  protected $field_phone_enum_work_add;
   protected $field_phone_enum_home;
   protected $field_phone_enum_other;
   protected $field_phone_enum_fax;
@@ -70,6 +71,23 @@ class FieldConfig {
    */
   public function setFieldPhoneEnumWork($field_phone_enum_work) {
     $this->field_phone_enum_work = $field_phone_enum_work;
+    return $this;
+  }
+
+  /**
+   * @return mixed
+   */
+  public function getFieldPhoneEnumWorkAdd() {
+    return $this->field_phone_enum_work_add;
+  }
+
+  /**
+   * @param mixed $field_phone_enum_work_add
+   * @return FieldConfig
+   */
+  public function setFieldPhoneEnumWorkAdd($field_phone_enum_work_add) {
+    $this->field_phone_enum_work_add = $field_phone_enum_work_add;
+
     return $this;
   }
 

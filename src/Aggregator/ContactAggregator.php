@@ -73,7 +73,7 @@ class ContactAggregator extends GeneralAggregator {
    * @throws \AmoCrm\Client\Exception\ResponseAggregatorException
    */
   protected function save($operation, Contact $contact) {
-    if ($result = parent::_save('contacts', $operation, [$contact->getArray()])) {
+    if ($result = parent::_save('contacts', $operation, [$contact->toArray()])) {
       $one_item = reset($result);
       $contact->setId($one_item['id']);
     }

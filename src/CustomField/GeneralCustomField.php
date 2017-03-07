@@ -44,7 +44,7 @@ class GeneralCustomField {
    *
    * @return array
    */
-  public function getArray() {
+  public function toArray() {
     $result = [
       'id'     => $this->id,
       'values' => [

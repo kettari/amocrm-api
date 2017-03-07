@@ -74,7 +74,7 @@ class LeadAggregator extends GeneralAggregator {
    * @throws \AmoCrm\Client\Exception\ResponseAggregatorException
    */
   protected function save($operation, Lead $lead) {
-    if ($result = parent::_save('leads', $operation, [$lead->getArray()])) {
+    if ($result = parent::_save('leads', $operation, [$lead->toArray()])) {
       $one_item = reset($result);
       $lead->setId($one_item['id']);
     }

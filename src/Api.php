@@ -10,6 +10,7 @@ namespace AmoCrm\Client;
 
 use AmoCrm\Client\Aggregator\ContactAggregator;
 use AmoCrm\Client\Aggregator\LeadAggregator;
+use AmoCrm\Client\Aggregator\NoteAggregator;
 use AmoCrm\Client\CustomField\FieldConfig;
 use Monolog\Logger;
 
@@ -106,6 +107,20 @@ class Api {
       ->setLogin($this->login)
       ->setApiHash($this->api_hash);
     return new LeadAggregator($this->logger, $this->field_config, $request);
+  }
+
+  /**
+   * Create notes aggregator object
+   *
+   * @return NoteAggregator
+   */
+  public function getNoteAggregator() {
+    $request = new Request($this->logger);
+    $request
+      ->setUrl(sprintf($this->base_url, $this->subdomain))
+      ->setLogin($this->login)
+      ->setApiHash($this->api_hash);
+    return new NoteAggregator($this->logger, $this->field_config, $request);
   }
 
 }

@@ -14,21 +14,14 @@ use AmoCrm\Client\CustomField\FieldConfig;
 use AmoCrm\Client\CustomField\PhoneCustomField;
 use AmoCrm\Client\CustomField\PhoneFieldFactory;
 
-class Contact {
-
-  /**
-   * AmoCRM ID
-   *
-   * @var string
-   */
-  protected $id = NULL;
+class Contact extends AbstractTimeAwareEntity {
 
   /**
    * Contact name
    *
    * @var string
    */
-  protected $name = NULL;
+  protected $name;
 
   /**
    * Array of AmoPhone***CustomField
@@ -52,39 +45,11 @@ class Contact {
   protected $tags = [];
 
   /**
-   * Unix timestamp
-   *
-   * @var integer
-   */
-  protected $date_create = NULL;
-
-  /**
-   * Responsible user ID
-   *
-   * @var integer
-   */
-  protected $responsible_user_id = NULL;
-
-  /**
    * Linked leads IDs
    *
    * @var array
    */
   protected $linked_leads_id = [];
-
-  /**
-   * ID of the entity in the client system
-   *
-   * @var string
-   */
-  protected $request_id = NULL;
-
-  /**
-   * Special hash key to link entities
-   *
-   * @var string
-   */
-  protected $hash = NULL;
 
   /**
    * Contact constructor.
@@ -93,8 +58,8 @@ class Contact {
    * @param \AmoCrm\Client\CustomField\FieldConfig $field_config
    */
   public function __construct(array $data, FieldConfig $field_config) {
-    // Creation date - now
-    $this->date_create = time();
+    parent::__construct($data);
+
     // Assign properties
     foreach ($data as $key => $val) {
       switch ($key) {
@@ -103,11 +68,6 @@ class Contact {
           continue;
         case 'custom_fields':
           $this->constructCustomFields($val, $field_config);
-          continue;
-        default:
-          if (property_exists(__CLASS__, $key)) {
-            $this->$key = $val;
-          }
           continue;
       }
     }
@@ -125,18 +85,12 @@ class Contact {
       // Check each custom field ID
       switch ($field['id']) {
         case $field_config->getFieldPhoneId():
-          $this->phones[] = PhoneFieldFactory::build(
-            $field_config,
-            $field['values'][0]['enum'],
-            $field['values'][0]['value']
-          );
+          $this->phones[] = PhoneFieldFactory::build($field_config,
+            $field['values'][0]['enum'], $field['values'][0]['value']);
           break;
         case $field_config->getFieldEmailId():
-          $this->emails[] = EmailFieldFactory::build(
-            $field_config,
-            $field['values'][0]['enum'],
-            $field['values'][0]['value']
-          );
+          $this->emails[] = EmailFieldFactory::build($field_config,
+            $field['values'][0]['enum'], $field['values'][0]['value']);
           break;
         /*case AmoCustomAccountConstants::getCustomFieldTallantoUrl():
           $this->tallanto_url = new AmoTallantoUrlCustomField($field['values'][0]['value']);
@@ -150,67 +104,35 @@ class Contact {
    *
    * @return array
    */
-  public function getArray() {
+  public function toArray() {
     // Custom fields
     $custom_fields = [];
 
     // Prepare phones
     /** @var PhoneCustomField $phone */
     foreach ($this->phones as $phone) {
-      if (is_object($phone)) {
-        $custom_fields[] = $phone->getArray();
+      if ($phone instanceof PhoneCustomField) {
+        $custom_fields[] = $phone->toArray();
       }
     }
     // Emails
     /** @var EmailCustomField $email */
     foreach ($this->emails as $email) {
-      if (is_object($email)) {
-        $custom_fields[] = $email->getArray();
+      if ($email instanceof EmailCustomField) {
+        $custom_fields[] = $email->toArray();
       }
     }
 
     // Build result array
-    $result = [
-      'date_create'   => $this->date_create,
-      'last_modified' => time(),
-      'request_id'    => $this->request_id,
-    ];
-    if (!is_null($this->id)) {
-      $result['id'] = $this->id;
-    }
-    if (!is_null($this->name)) {
-      $result['name'] = $this->name;
-    }
+    $result = parent::toArray();
     if (count($custom_fields) > 0) {
       $result['custom_fields'] = $custom_fields;
     }
     if (count($this->tags) > 0) {
       $result['tags'] = implode(',', $this->tags);
     }
-    if (!is_null($this->responsible_user_id)) {
-      $result['responsible_user_id'] = $this->responsible_user_id;
-    }
-    if (count($this->linked_leads_id) > 0) {
-      $result['linked_leads_id'] = $this->linked_leads_id;
-    }
 
     return $result;
-  }
-
-  /**
-   * @return string
-   */
-  public function getId() {
-    return $this->id;
-  }
-
-  /**
-   * @param string $id
-   * @return Contact
-   */
-  public function setId($id) {
-    $this->id = $id;
-    return $this;
   }
 
   /**
@@ -226,6 +148,7 @@ class Contact {
    */
   public function setName($name) {
     $this->name = $name;
+
     return $this;
   }
 
@@ -242,6 +165,7 @@ class Contact {
    */
   public function setPhones($phones) {
     $this->phones = $phones;
+
     return $this;
   }
 
@@ -258,6 +182,7 @@ class Contact {
    */
   public function setEmails($emails) {
     $this->emails = $emails;
+
     return $this;
   }
 
@@ -274,38 +199,7 @@ class Contact {
    */
   public function setTags($tags) {
     $this->tags = $tags;
-    return $this;
-  }
 
-  /**
-   * @return int
-   */
-  public function getDateCreate() {
-    return $this->date_create;
-  }
-
-  /**
-   * @param int $date_create
-   * @return Contact
-   */
-  public function setDateCreate($date_create) {
-    $this->date_create = $date_create;
-    return $this;
-  }
-
-  /**
-   * @return int
-   */
-  public function getResponsibleUserId() {
-    return $this->responsible_user_id;
-  }
-
-  /**
-   * @param int $responsible_user_id
-   * @return Contact
-   */
-  public function setResponsibleUserId($responsible_user_id) {
-    $this->responsible_user_id = $responsible_user_id;
     return $this;
   }
 
@@ -322,39 +216,7 @@ class Contact {
    */
   public function setLinkedLeadsId($linked_leads_id) {
     $this->linked_leads_id = $linked_leads_id;
+
     return $this;
   }
-
-  /**
-   * @return string
-   */
-  public function getRequestId() {
-    return $this->request_id;
-  }
-
-  /**
-   * @param string $request_id
-   * @return Contact
-   */
-  public function setRequestId($request_id) {
-    $this->request_id = $request_id;
-    return $this;
-  }
-
-  /**
-   * @return string
-   */
-  public function getHash() {
-    return $this->hash;
-  }
-
-  /**
-   * @param string $hash
-   * @return Contact
-   */
-  public function setHash($hash) {
-    $this->hash = $hash;
-    return $this;
-  }
-
 }

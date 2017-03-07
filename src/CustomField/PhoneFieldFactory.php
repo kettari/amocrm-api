@@ -16,7 +16,7 @@ class PhoneFieldFactory {
    * @param \AmoCrm\Client\CustomField\FieldConfig $field_config
    * @param $enum_id
    * @param $value
-   * @return \AmoCrm\Client\CustomField\FaxPhoneCustomField|\AmoCrm\Client\CustomField\HomePhoneCustomField|\AmoCrm\Client\CustomField\MobilePhoneCustomField|\AmoCrm\Client\CustomField\OtherPhoneCustomField|\AmoCrm\Client\CustomField\WorkPhoneCustomField
+   * @return \AmoCrm\Client\CustomField\FaxPhoneCustomField|\AmoCrm\Client\CustomField\HomePhoneCustomField|\AmoCrm\Client\CustomField\MobilePhoneCustomField|\AmoCrm\Client\CustomField\OtherPhoneCustomField|\AmoCrm\Client\CustomField\WorkAddPhoneCustomField|\AmoCrm\Client\CustomField\WorkPhoneCustomField
    * @throws \AmoCrm\Client\Exception\CustomFieldUnknownEnumException
    */
   public static function build(FieldConfig $field_config, $enum_id, $value) {
@@ -31,7 +31,8 @@ class PhoneFieldFactory {
         return new FaxPhoneCustomField($field_config->getFieldPhoneId(), $field_config->getFieldPhoneEnumFax(), $value);
       case $field_config->getFieldPhoneEnumOther():
         return new OtherPhoneCustomField($field_config->getFieldPhoneId(), $field_config->getFieldPhoneEnumOther(), $value);
-      // TODO: Add Phone enum WORKADD ('direct phone') or it will crash for contacts with this field filled
+      case $field_config->getFieldPhoneEnumWorkAdd():
+        return new WorkAddPhoneCustomField($field_config->getFieldPhoneId(), $field_config->getFieldPhoneEnumOther(), $value);
       default:
         throw new CustomFieldUnknownEnumException(sprintf('Unknown custom phone field enum = %s', $enum_id));
         break;

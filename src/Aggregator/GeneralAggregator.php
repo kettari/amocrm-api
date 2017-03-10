@@ -91,71 +91,104 @@ abstract class GeneralAggregator extends ArrayObject {
       throw new IdentifierAggregatorException('ID is empty');
     }
     if (!in_array($entities, ['contacts', 'leads', 'notes'])) {
-      throw new UnknownEntityAggregatorException(sprintf('Entities "%s" is not supported', $entities));
+      throw new UnknownEntityAggregatorException(sprintf('Entities "%s" is not supported',
+        $entities));
     }
 
     // Search
-    if ($response_array = $this->request
-      ->setMethod(sprintf('/private/api/v2/json/%s/list', $entities))
+    if ($response_array = $this->request->setMethod(sprintf('/private/api/v2/json/%s/list',
+      $entities))
       ->setQuery(NULL)
       ->setId($id)
       ->get()
     ) {
-      if (isset($response_array['response'][$entities]) && is_array($response_array['response'][$entities])) {
-        $this->logger->debug(sprintf('Search in %s for ID "{id}" returned {results_count} result(s)', $entities), [
+      if (isset($response_array['response'][$entities]) &&
+        is_array($response_array['response'][$entities])
+      ) {
+        $this->logger->debug(sprintf('Search in %s for ID "{id}" returned {results_count} result(s)',
+          $entities), [
           'id'            => $id,
           'results_count' => count($response_array['response'][$entities]),
         ]);
+
         return $response_array['response'][$entities];
-      }
-      else {
-        throw new ResponseAggregatorException(sprintf('Bad %s response structure', $entities));
+      } else {
+        throw new ResponseAggregatorException(sprintf('Bad %s response structure',
+          $entities));
       }
     }
 
-    $this->logger->debug(sprintf('Search in %s for ID "{id}" returned empty result', $entities), ['id' => $id]);
+    $this->logger->debug(sprintf('Search in %s for ID "{id}" returned empty result',
+      $entities), ['id' => $id]);
+
     return NULL;
   }
 
   /**
    * Get entity by ID
    *
-   * @param string $entities Entities: 'contacts' or 'leads'
+   * @param string $entity_type Entities: 'contacts' or 'leads'
    * @param string $query
+   * @param int $page_size
+   * @param callable $callback
    * @return array|null Array of entities or NULL
    * @throws \AmoCrm\Client\Exception\IdentifierAggregatorException
    * @throws \AmoCrm\Client\Exception\ResponseAggregatorException
    * @throws \AmoCrm\Client\Exception\UnknownEntityAggregatorException
    */
-  protected function _search($entities, $query) {
-    if (empty($query)) {
-      throw new IdentifierAggregatorException('Query is empty');
+  protected function _load($entity_type, $query = NULL, $page_size = 50, callable $callback = NULL) {
+    if (!in_array($entity_type, ['contacts', 'leads'])) {
+      throw new UnknownEntityAggregatorException(sprintf('Entities "%s" is not supported',
+        $entity_type));
     }
-    if (!in_array($entities, ['contacts', 'leads'])) {
-      throw new UnknownEntityAggregatorException(sprintf('Entities "%s" is not supported', $entities));
-    }
+
+    // Configure request
+    $current_page = 0;
+    $this->request->setMethod(sprintf('/private/api/v2/json/%s/list',
+      $entity_type))
+      ->setPageSize($page_size)
+      ->setQuery($query)
+      ->setId(NULL);
 
     // Search
-    if ($response_array = $this->request
-      ->setMethod(sprintf('/private/api/v2/json/%s/list', $entities))
-      ->setQuery($query)
-      ->setId(NULL)
-      ->get()
-    ) {
-      if (isset($response_array['response'][$entities]) && is_array($response_array['response'][$entities])) {
-        $this->logger->debug(sprintf('Search in %s for query "{query}" returned {results_count} result(s)', $entities), [
+    $batch = [];
+    do {
+      $part = [];
+      $response = $this->request->setPageNumber(++$current_page)
+        ->get();
+      if (isset($response['response'][$entity_type]) &&
+        is_array($response['response'][$entity_type])
+      ) {
+        $part = $response['response'][$entity_type];
+        // Add log
+        $this->logger->debug(sprintf('Loaded {results_count} %s (page {current_page})',
+          $entity_type), [
+          'results_count' => count($part),
           'query'         => $query,
-          'results_count' => $this->count(),
+          'current_page'  => $current_page,
         ]);
-        return $response_array['response'][$entities];
+
+        $batch = array_merge($batch, $part);
+        if (!is_null($callback)) {
+          call_user_func_array($callback,
+            ['status' => 'loading', 'data' => $part]);
+        }
       }
-      else {
-        throw new ResponseAggregatorException(sprintf('Bad %s response structure', $entities));
-      }
+    } while (count($part) == $page_size);
+
+    // Add log
+    $this->logger->debug(sprintf('Total loaded {results_count} %s in {total_pages} requests',
+      $entity_type), [
+      'results_count' => count($batch),
+      'query'         => $query,
+      'total_pages'   => $current_page,
+    ]);
+    if (!is_null($callback)) {
+      call_user_func_array($callback,
+        ['status' => 'loaded', 'data' => $batch]);
     }
 
-    $this->logger->debug(sprintf('Search in %s for query "{query}" returned empty result', $entities), ['query' => $query]);
-    return NULL;
+    return $batch;
   }
 
   /**
@@ -171,10 +204,12 @@ abstract class GeneralAggregator extends ArrayObject {
    */
   protected function _save($entities, $operation, $rows) {
     if (!in_array($entities, ['contacts', 'leads', 'notes'])) {
-      throw new UnknownEntityAggregatorException(sprintf('Entities "%s" is not supported', $entities));
+      throw new UnknownEntityAggregatorException(sprintf('Entities "%s" is not supported',
+        $entities));
     }
     if (!in_array($operation, ['add', 'update'])) {
-      throw new UnknownOperationAggregatorException(sprintf('Operation "%s" is not supported', $operation));
+      throw new UnknownOperationAggregatorException(sprintf('Operation "%s" is not supported',
+        $operation));
     }
 
     $request = [
@@ -185,26 +220,30 @@ abstract class GeneralAggregator extends ArrayObject {
       ],
     ];
 
-    if ($response_array = $this->request
-      ->setMethod(sprintf('/private/api/v2/json/%s/set', $entities))
+    if ($response_array = $this->request->setMethod(sprintf('/private/api/v2/json/%s/set',
+      $entities))
       ->setQuery(NULL)
       ->setId(NULL)
       ->post($request)
     ) {
-      if (isset($response_array['response'][$entities][$operation]) && is_array($response_array['response'][$entities][$operation])) {
+      if (isset($response_array['response'][$entities][$operation]) &&
+        is_array($response_array['response'][$entities][$operation])
+      ) {
         $this->logger->debug('Entities saved: operation={operation}, count={count}',
           [
             'operation' => $operation,
             'count'     => count($rows),
           ]);
+
         return $response_array['response'][$entities][$operation];
-      }
-      else {
-        throw new ResponseAggregatorException(sprintf('Bad %s response structure', $entities));
+      } else {
+        throw new ResponseAggregatorException(sprintf('Bad %s response structure',
+          $entities));
       }
     }
 
-    throw new ResponseAggregatorException(sprintf('Bad %s response: empty or NULL', $entities));
+    throw new ResponseAggregatorException(sprintf('Bad %s response: empty or NULL',
+      $entities));
   }
 
 }

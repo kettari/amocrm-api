@@ -8,6 +8,7 @@
 
 namespace AmoCrm\Client\Aggregator;
 
+use AmoCrm\Client\Exception\IdentifierAggregatorException;
 use AmoCrm\Client\Object\Contact;
 
 class ContactAggregator extends GeneralAggregator {
@@ -18,17 +19,43 @@ class ContactAggregator extends GeneralAggregator {
    *
    * @param $query
    * @return bool TRUE if something were found, FALSE otherwise
-   * @throws \AmoCrm\Client\Exception\QueryAggregatorException
-   * @throws \AmoCrm\Client\Exception\ResponseAggregatorException
+   * @throws \AmoCrm\Client\Exception\IdentifierAggregatorException
    */
   public function search($query) {
+    if (empty($query)) {
+      throw new IdentifierAggregatorException('Query is empty');
+    }
+
+    return $this->searchEx($query);
+  }
+
+  /**
+   * Search for substring and load records taking into account pagination.
+   *
+   * @param $query
+   * @param int $page_size
+   * @param callable $callback
+   * @return bool
+   */
+  public function searchEx($query, $page_size = 50, callable $callback = NULL) {
     $this->clear();
-    if ($result = parent::_search('contacts', $query)) {
+    if ($result = parent::_load('contacts', $query, $page_size, $callback)) {
       foreach ($result as $one_item) {
-        $this->append(new Contact($one_item, $this->field_config));
+        $contact = new Contact($one_item, $this->field_config);
+        if (!is_null($callback)) {
+          call_user_func_array($callback,
+            ['status' => 'converting', 'data' => $contact]);
+        }
+        $this->append($contact);
       }
+      if (!is_null($callback)) {
+        call_user_func_array($callback,
+          ['status' => 'converted', 'data' => NULL]);
+      }
+
       return TRUE;
     }
+
     return FALSE;
   }
 
@@ -44,8 +71,10 @@ class ContactAggregator extends GeneralAggregator {
       foreach ($result as $one_item) {
         $this->append(new Contact($one_item, $this->field_config));
       }
+
       return TRUE;
     }
+
     return FALSE;
   }
 
@@ -73,7 +102,9 @@ class ContactAggregator extends GeneralAggregator {
    * @throws \AmoCrm\Client\Exception\ResponseAggregatorException
    */
   protected function save($operation, Contact $contact) {
-    if ($result = parent::_save('contacts', $operation, [$contact->toArray()])) {
+    if ($result = parent::_save('contacts', $operation,
+      [$contact->toArray()])
+    ) {
       $one_item = reset($result);
       $contact->setId($one_item['id']);
     }

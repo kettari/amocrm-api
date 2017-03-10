@@ -54,6 +54,16 @@ class Request {
    */
   protected $id;
 
+  /**
+   * @var int
+   */
+  protected $page_number = 1;
+
+  /**
+   * @var int
+   */
+  protected $page_size = 500;
+
 
   /**
    * Api constructor.
@@ -152,6 +162,9 @@ class Request {
     $uri = sprintf('%s%s?USER_LOGIN=%s&USER_HASH=%s',
       $this->getUrl(), $this->getMethod(), $this->getLogin(), $this->getApiHash());
 
+    // Set page number and page size
+    $uri .= sprintf('&limit_offset=%d', ($this->getPageNumber() - 1) * $this->getPageSize());
+    $uri .= sprintf('&limit_rows=%d', $this->getPageSize());
     // If query defined, concatenate it
     if (!empty($this->query)) {
       $uri .= sprintf('&query=%s', urlencode($this->query));
@@ -296,5 +309,37 @@ class Request {
     return $this;
   }
 
+  /**
+   * @return int
+   */
+  public function getPageNumber() {
+    return $this->page_number;
+  }
 
+  /**
+   * @param int $page_number
+   * @return Request
+   */
+  public function setPageNumber($page_number) {
+    $this->page_number = $page_number;
+
+    return $this;
+  }
+
+  /**
+   * @return int
+   */
+  public function getPageSize() {
+    return $this->page_size;
+  }
+
+  /**
+   * @param int $page_size
+   * @return Request
+   */
+  public function setPageSize($page_size) {
+    $this->page_size = $page_size;
+
+    return $this;
+  }
 }

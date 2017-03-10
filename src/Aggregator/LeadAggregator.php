@@ -24,7 +24,7 @@ class LeadAggregator extends GeneralAggregator {
    */
   public function search($query) {
     $this->clear();
-    if ($result = parent::_search('leads', $query)) {
+    if ($result = parent::_load('leads', $query)) {
       foreach ($result as $one_item) {
         $this->append(new Lead($one_item, $this->field_config));
       }

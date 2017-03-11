@@ -29,7 +29,7 @@ class NoteAggregator extends GeneralAggregator {
    * Get the note from the amoCRM using ID
    *
    * @param string $id amoCRM note id
-   * @return bool
+   * @return null|Note object if found or NULL
    */
   public function get($id) {
     $this->clear();
@@ -37,11 +37,12 @@ class NoteAggregator extends GeneralAggregator {
       foreach ($result as $one_item) {
         $this->append(new Note($one_item));
       }
-
-      return TRUE;
+      $iterator = $this->getIterator();
+      $iterator->rewind();
+      return $iterator->current();
     }
 
-    return FALSE;
+    return NULL;
   }
 
   /**
@@ -54,7 +55,7 @@ class NoteAggregator extends GeneralAggregator {
   public function add(Note $note) {
     $this->save('add', $note);
     $this->append(clone $note);
-    $this->logger->info('Note added (id={id})', [
+    $this->logger->debug('Note added (id={id})', [
       'id' => $note->getId(),
     ]);
   }
@@ -81,7 +82,7 @@ class NoteAggregator extends GeneralAggregator {
    */
   public function update(Note $note) {
     $this->save('update', $note);
-    $this->logger->info('Note updated (id={id})', [
+    $this->logger->debug('Note updated (id={id})', [
       'id' => $note->getId(),
     ]);
   }

@@ -19,13 +19,8 @@ class ContactAggregator extends GeneralAggregator {
    *
    * @param $query
    * @return bool TRUE if something were found, FALSE otherwise
-   * @throws \AmoCrm\Client\Exception\IdentifierAggregatorException
    */
   public function search($query) {
-    if (empty($query)) {
-      throw new IdentifierAggregatorException('Query is empty');
-    }
-
     return $this->searchEx($query);
   }
 
@@ -63,7 +58,7 @@ class ContactAggregator extends GeneralAggregator {
    * Get the contact from the amoCRM using ID
    *
    * @param string $id amoCRM contact id
-   * @return bool
+   * @return null|Contact Contact object if found or NULL
    */
   public function get($id) {
     $this->clear();
@@ -72,10 +67,12 @@ class ContactAggregator extends GeneralAggregator {
         $this->append(new Contact($one_item, $this->field_config));
       }
 
-      return TRUE;
+      $iterator = $this->getIterator();
+      $iterator->rewind();
+      return $iterator->current();
     }
 
-    return FALSE;
+    return NULL;
   }
 
   /**
@@ -88,7 +85,7 @@ class ContactAggregator extends GeneralAggregator {
   public function add(Contact $contact) {
     $this->save('add', $contact);
     $this->append(clone $contact);
-    $this->logger->info('Contact "{name}" added (id={id})', [
+    $this->logger->debug('Contact "{name}" added (id={id})', [
       'name' => $contact->getName(),
       'id'   => $contact->getId(),
     ]);
@@ -118,7 +115,7 @@ class ContactAggregator extends GeneralAggregator {
    */
   public function update(Contact $contact) {
     $this->save('update', $contact);
-    $this->logger->info('Contact "{name}" updated (id={id})', [
+    $this->logger->debug('Contact "{name}" updated (id={id})', [
       'name' => $contact->getName(),
       'id'   => $contact->getId(),
     ]);

@@ -37,7 +37,7 @@ class LeadAggregator extends GeneralAggregator {
    * Get the lead from the amoCRM using ID
    *
    * @param string $id amoCRM lead id
-   * @return bool
+   * @return null|Lead object if found or NULL
    */
   public function get($id) {
     $this->clear();
@@ -45,9 +45,12 @@ class LeadAggregator extends GeneralAggregator {
       foreach ($result as $one_item) {
         $this->append(new Lead($one_item, $this->field_config));
       }
-      return TRUE;
+      $iterator = $this->getIterator();
+      $iterator->rewind();
+      return $iterator->current();
     }
-    return FALSE;
+
+    return NULL;
   }
 
   /**
@@ -60,7 +63,7 @@ class LeadAggregator extends GeneralAggregator {
   public function add(Lead $lead) {
     $this->save('add', $lead);
     $this->append(clone $lead);
-    $this->logger->info('Lead "{name}" added (id={id})', [
+    $this->logger->debug('Lead "{name}" added (id={id})', [
       'name' => $lead->getName(),
       'id'   => $lead->getId(),
     ]);
@@ -88,7 +91,7 @@ class LeadAggregator extends GeneralAggregator {
    */
   public function update(Lead $lead) {
     $this->save('update', $lead);
-    $this->logger->info('Lead "{name}" updated (id={id})', [
+    $this->logger->debug('Lead "{name}" updated (id={id})', [
       'name' => $lead->getName(),
       'id'   => $lead->getId(),
     ]);

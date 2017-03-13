@@ -78,20 +78,31 @@ class Api {
    */
   public function setBaseUrl($base_url) {
     $this->base_url = $base_url;
+
     return $this;
+  }
+
+  /**
+   * Creates Request object.
+   *
+   * @return \AmoCrm\Client\Request
+   */
+  public function getRequest() {
+    $request = new Request($this->logger);
+    $request->setUrl(sprintf($this->base_url, $this->subdomain))
+      ->setLogin($this->login)
+      ->setApiHash($this->api_hash);
+
+    return $request;
   }
 
   /**
    * Create contacts aggregator object
    *
-   * @return ContactAggregator
+   * @param \AmoCrm\Client\Request $request
+   * @return \AmoCrm\Client\Aggregator\ContactAggregator
    */
-  public function getContactAggregator() {
-    $request = new Request($this->logger);
-    $request
-      ->setUrl(sprintf($this->base_url, $this->subdomain))
-      ->setLogin($this->login)
-      ->setApiHash($this->api_hash);
+  public function getContactAggregator(Request $request) {
     return new ContactAggregator($this->logger, $this->field_config, $request);
   }
 
@@ -100,26 +111,17 @@ class Api {
    *
    * @return LeadAggregator
    */
-  public function getLeadAggregator() {
-    $request = new Request($this->logger);
-    $request
-      ->setUrl(sprintf($this->base_url, $this->subdomain))
-      ->setLogin($this->login)
-      ->setApiHash($this->api_hash);
+  public function getLeadAggregator(Request $request) {
     return new LeadAggregator($this->logger, $this->field_config, $request);
   }
 
   /**
    * Create notes aggregator object
    *
-   * @return NoteAggregator
+   * @param \AmoCrm\Client\Request $request
+   * @return \AmoCrm\Client\Aggregator\NoteAggregator
    */
-  public function getNoteAggregator() {
-    $request = new Request($this->logger);
-    $request
-      ->setUrl(sprintf($this->base_url, $this->subdomain))
-      ->setLogin($this->login)
-      ->setApiHash($this->api_hash);
+  public function getNoteAggregator(Request $request) {
     return new NoteAggregator($this->logger, $this->field_config, $request);
   }
 

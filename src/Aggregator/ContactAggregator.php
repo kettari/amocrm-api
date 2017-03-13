@@ -8,7 +8,7 @@
 
 namespace AmoCrm\Client\Aggregator;
 
-use AmoCrm\Client\Exception\IdentifierAggregatorException;
+
 use AmoCrm\Client\Object\Contact;
 
 class ContactAggregator extends GeneralAggregator {
@@ -69,6 +69,7 @@ class ContactAggregator extends GeneralAggregator {
 
       $iterator = $this->getIterator();
       $iterator->rewind();
+
       return $iterator->current();
     }
 

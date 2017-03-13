@@ -184,8 +184,7 @@ abstract class GeneralAggregator extends ArrayObject {
       'total_pages'   => $current_page,
     ]);
     if (!is_null($callback)) {
-      call_user_func_array($callback,
-        ['status' => 'loaded', 'data' => $batch]);
+      call_user_func_array($callback, ['status' => 'loaded', 'data' => $batch]);
     }
 
     return $batch;
@@ -244,6 +243,15 @@ abstract class GeneralAggregator extends ArrayObject {
 
     throw new ResponseAggregatorException(sprintf('Bad %s response: empty or NULL',
       $entities));
+  }
+
+  /**
+   * Get Request object.
+   *
+   * @return \AmoCrm\Client\Request
+   */
+  public function getRequest() {
+    return $this->request;
   }
 
 }

@@ -77,6 +77,15 @@ abstract class GeneralAggregator extends ArrayObject {
   abstract public function get($id);
 
   /**
+   * Creates entity object.
+   *
+   * @param array $data
+   * @param \AmoCrm\Client\CustomField\FieldConfig|NULL $field_config
+   * @return mixed
+   */
+  abstract protected function createObject(array $data, FieldConfig $field_config = NULL);
+
+  /**
    * Get entity by ID
    *
    * @param string $entities Entities: 'contacts' or 'leads'

@@ -16,31 +16,34 @@ namespace AmoCrm\Client;
 class ThrottleSingleton {
 
   /**
+   * Idle time in seconds between checks while waiting for cooldown
+   */
+  const IDLE_SECONDS = 0.02;
+
+  /**
+   * Average number of requests allowed per second within WINDOW_SPAN
+   */
+  const REQUESTS_PER_SECOND = 1;
+
+  /**
+   * Time window to analyze requests
+   */
+  const WINDOW_SPAN = 10;
+
+  /**
+   * Number of requests allowed within burst with length 1 second
+   */
+  const BURST_COUNT = 5;
+
+  /**
+   * Cooldown period in seconds
+   */
+  const COOLDOWN_SPAN = 60;
+
+  /**
    * @var null
    */
   private static $instance = NULL;
-
-  /**
-   * Number of requests allowed to the API per second
-   *
-   * @var int
-   */
-  protected $frequency_allowed = 1;
-
-  /**
-   * Period of time to analyze burst in seconds
-   *
-   * @var int
-   */
-  protected $burst_period = 3;
-
-  /**
-   * Relax time: how many seconds we wait to free the queue and calm
-   * amoCRM watchdog
-   *
-   * @var int
-   */
-  protected $relax_time = 30;
 
   /**
    * @var array
@@ -50,7 +53,7 @@ class ThrottleSingleton {
   /**
    * @var int
    */
-  protected $waiting_cycles = 0;
+  protected $idle_time = 0;
 
   /**
    * @var int
@@ -88,17 +91,82 @@ class ThrottleSingleton {
    * @return bool
    */
   public function isRequestAllowed() {
-    // Analyze the burst
+    $this->cleanQueue();
+
+    // Average vote
+    $average_exceeded = ((count($this->requests) / self::WINDOW_SPAN) >
+      self::REQUESTS_PER_SECOND);
+    if ($average_exceeded) {
+      return FALSE;
+    }
+
+    // If there was no burst, allow request immediately
+    if (!$this->wasBurst()) {
+      return TRUE;
+    }
+
+    // Normal speed
+    if ($this->requestsLastSecond() >= self::REQUESTS_PER_SECOND) {
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  /**
+   * Cleans the queue, removes old requests.
+   */
+  private function cleanQueue() {
     $now = microtime(TRUE);
-    $cutoff = $now - $this->burst_period;
+    $cutoff = $now - self::WINDOW_SPAN;
     foreach ($this->requests as $key => $rq) {
+      // If request is older than WINDOW_SPAN, remove it from the queue
       if ($rq < $cutoff) {
         unset($this->requests[$key]);
       }
     }
+  }
 
-    return ((count($this->requests) / $this->burst_period) <
-      $this->frequency_allowed);
+  /**
+   * Checks if there was a burst in the queue.
+   *
+   * @return bool
+   */
+  private function wasBurst() {
+    $burst_queue = [];
+    foreach ($this->requests as $key => $rq) {
+      $index = (int)floor($rq);
+      if (!isset($burst_queue[$index])) {
+        $burst_queue[$index] = 1;
+      } else {
+        $burst_queue[$index]++;
+      }
+      // If we have burst, vote to disallow request
+      if ($burst_queue[$index] >= self::BURST_COUNT) {
+        return TRUE;
+      }
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Counts requests in the last second.
+   *
+   * @return int
+   */
+  private function requestsLastSecond() {
+    $now = microtime(TRUE);
+    $cutoff = $now - 1;
+    $last_sec_queue = $this->requests;
+    foreach ($last_sec_queue as $key => $rq) {
+      // If request is older than 1 second, remove it from the queue
+      if ($rq < $cutoff) {
+        unset($last_sec_queue[$key]);
+      }
+    }
+
+    return count($last_sec_queue);
   }
 
   /**
@@ -122,14 +190,14 @@ class ThrottleSingleton {
     $wait_start = microtime(TRUE);
     while (!$this->isRequestAllowed()) {
       $now = microtime(TRUE);
-      if (($now - $wait_start) > $this->relax_time) {
+      if (($now - $wait_start) > self::COOLDOWN_SPAN) {
         // Relax time exceeded, request still not allowed
         return FALSE;
       }
-      usleep(0.1 * 1000000);
+      usleep(self::IDLE_SECONDS * 1000000);
 
       // Collect statistics
-      $this->waiting_cycles++;
+      $this->idle_time += self::IDLE_SECONDS;
     }
 
     return TRUE;
@@ -140,8 +208,8 @@ class ThrottleSingleton {
    *
    * @return int
    */
-  public function getWaitingCycles() {
-    return $this->waiting_cycles;
+  public function getIdletime() {
+    return $this->idle_time;
   }
 
   /**

@@ -58,9 +58,10 @@ class Note extends AbstractTimeAwareEntity {
    *  13 - task result
    *  102 - incoming sms
    *  103 - outgoing sms
+   *
    * @var integer
    */
-  protected $note_type;
+  protected $note_type = self::NOTE_TYPE_COMMON;
 
   /**
    * Multi string text of the note
@@ -68,6 +69,22 @@ class Note extends AbstractTimeAwareEntity {
    * @var string
    */
   protected $text;
+
+  /**
+   * Return array ready to be sent to AmoCRM
+   *
+   * @return array
+   */
+  public function toArray() {
+    // Build result array
+    $result = parent::toArray();
+    $result['element_id'] = $this->getElementId();
+    $result['element_type'] = $this->getElementType();
+    $result['note_type'] = $this->getNoteType();
+    $result['text'] = $this->getText();
+
+    return $result;
+  }
 
   /**
    * @return int

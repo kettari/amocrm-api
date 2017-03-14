@@ -36,13 +36,22 @@ class Lead extends AbstractTaggableEntity {
   protected $status_id = NULL;
 
   /**
-   * ID of the entity in the client system
+   * Return array ready to be sent to AmoCRM
    *
-   * @var string
+   * @return array
    */
-  protected $request_id = NULL;
+  public function toArray() {
+    // Build result array
+    $result = parent::toArray();
+    $result['price'] = $this->getPrice();
+    $result['name'] = $this->getName();
+    $result['pipeline_id'] = $this->getPipelineId();
+    $result['status_id'] = $this->getStatusId();
 
-  /**
+    return $result;
+  }
+
+    /**
    * @return float
    */
   public function getPrice() {
@@ -55,6 +64,7 @@ class Lead extends AbstractTaggableEntity {
    */
   public function setPrice($price) {
     $this->price = $price;
+
     return $this;
   }
 
@@ -71,6 +81,7 @@ class Lead extends AbstractTaggableEntity {
    */
   public function setName($name) {
     $this->name = $name;
+
     return $this;
   }
 
@@ -87,6 +98,7 @@ class Lead extends AbstractTaggableEntity {
    */
   public function setPipelineId($pipeline_id) {
     $this->pipeline_id = $pipeline_id;
+
     return $this;
   }
 
@@ -103,6 +115,7 @@ class Lead extends AbstractTaggableEntity {
    */
   public function setStatusId($status_id) {
     $this->status_id = $status_id;
+
     return $this;
   }
 

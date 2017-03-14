@@ -53,6 +53,20 @@ abstract class AbstractTimeAwareEntity extends AbstractIdentifiableEntity {
   }
 
   /**
+   * Return array ready to be sent to AmoCRM
+   *
+   * @return array
+   */
+  public function toArray() {
+    return array_merge(parent::toArray(), [
+      'date_create'         => $this->getDateCreate(),
+      'last_modified'       => $this->getLastModified(),
+      'responsible_user_id' => $this->getResponsibleUserId(),
+      'created_user_id'     => $this->getCreatedUserId(),
+    ]);
+  }
+
+  /**
    * @return int
    */
   public function getDateCreate() {

@@ -26,6 +26,18 @@ abstract class AbstractIdentifiableEntity extends AbstractEntity {
   protected $request_id;
 
   /**
+   * Return array ready to be sent to AmoCRM
+   *
+   * @return array
+   */
+  public function toArray() {
+    return [
+      'id'         => $this->getId(),
+      'request_id' => $this->getRequestId(),
+    ];
+  }
+
+  /**
    * @return string
    */
   public function getId() {

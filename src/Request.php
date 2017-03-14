@@ -102,7 +102,7 @@ class Request {
   protected function execute($http_method, $params = []) {
     $result = NULL;
 
-    // Throttle control to prevent HTTP 409 from amoCRM server
+    // Throttle control to prevent HTTP 429 from amoCRM server
     if (!$this->throttle_controller->wait()) {
       $message = sprintf('Throttle control denied request: method=%s, link=%s',
         $http_method, $this->getUri());
@@ -138,7 +138,8 @@ class Request {
       // Try to decode JSON
       $result = json_decode($curl_result, TRUE);
       if (json_last_error() != JSON_ERROR_NONE) {
-        throw new JsonDecodeException('Error decoding JSON');
+        throw new JsonDecodeException('Error decoding JSON: '.
+          json_last_error_msg());
       }
     }
 

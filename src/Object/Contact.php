@@ -82,9 +82,6 @@ class Contact extends AbstractTaggableEntity {
           $this->emails[] = EmailFieldFactory::build($field_config,
             $field['values'][0]['enum'], $field['values'][0]['value']);
           break;
-        /*case AmoCustomAccountConstants::getCustomFieldTallantoUrl():
-          $this->tallanto_url = new AmoTallantoUrlCustomField($field['values'][0]['value']);
-          break;*/
       }
     }
   }
@@ -95,7 +92,12 @@ class Contact extends AbstractTaggableEntity {
    * @return array
    */
   public function toArray() {
-    // Custom fields
+    // Build result array
+    $result = parent::toArray();
+    $result['name'] = $this->getName();
+    $result['linked_leads_id'] = $this->getLinkedLeadsId();
+
+      // Custom fields
     $custom_fields = [];
 
     // Prepare phones
@@ -113,8 +115,6 @@ class Contact extends AbstractTaggableEntity {
       }
     }
 
-    // Build result array
-    $result = parent::toArray();
     if (count($custom_fields) > 0) {
       $result['custom_fields'] = $custom_fields;
     }

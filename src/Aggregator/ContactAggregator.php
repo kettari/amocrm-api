@@ -9,6 +9,7 @@
 namespace AmoCrm\Client\Aggregator;
 
 
+use AmoCrm\Client\CustomField\FieldConfig;
 use AmoCrm\Client\Object\Contact;
 
 class ContactAggregator extends GeneralAggregator {
@@ -36,7 +37,7 @@ class ContactAggregator extends GeneralAggregator {
     $this->clear();
     if ($result = parent::_load('contacts', $query, $page_size, $callback)) {
       foreach ($result as $one_item) {
-        $contact = new Contact($one_item, $this->field_config);
+        $contact = $this->createObject($one_item, $this->field_config);
         if (!is_null($callback)) {
           call_user_func_array($callback,
             ['status' => 'converting', 'data' => $contact]);
@@ -55,6 +56,17 @@ class ContactAggregator extends GeneralAggregator {
   }
 
   /**
+   * Creates entity object.
+   *
+   * @param array $data
+   * @param \AmoCrm\Client\CustomField\FieldConfig|NULL $field_config
+   * @return Contact
+   */
+  protected function createObject(array $data, FieldConfig $field_config = NULL) {
+    return new Contact($data, $field_config);
+  }
+
+  /**
    * Get the contact from the amoCRM using ID
    *
    * @param string $id amoCRM contact id
@@ -64,7 +76,7 @@ class ContactAggregator extends GeneralAggregator {
     $this->clear();
     if ($result = parent::_get('contacts', $id)) {
       foreach ($result as $one_item) {
-        $this->append(new Contact($one_item, $this->field_config));
+        $this->append($this->createObject($one_item, $this->field_config));
       }
 
       $iterator = $this->getIterator();

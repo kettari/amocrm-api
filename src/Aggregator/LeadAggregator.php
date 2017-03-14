@@ -9,6 +9,7 @@
 namespace AmoCrm\Client\Aggregator;
 
 
+use AmoCrm\Client\CustomField\FieldConfig;
 use AmoCrm\Client\Object\Lead;
 
 class LeadAggregator extends GeneralAggregator {
@@ -26,12 +27,26 @@ class LeadAggregator extends GeneralAggregator {
     $this->clear();
     if ($result = parent::_load('leads', $query)) {
       foreach ($result as $one_item) {
-        $this->append(new Lead($one_item, $this->field_config));
+        $this->append($this->createObject($one_item, $this->field_config));
       }
+
       return TRUE;
     }
+
     return FALSE;
   }
+
+  /**
+   * Creates entity object.
+   *
+   * @param array $data
+   * @param \AmoCrm\Client\CustomField\FieldConfig|NULL $field_config
+   * @return Lead
+   */
+  protected function createObject(array $data, FieldConfig $field_config = NULL) {
+    return new Lead($data, $field_config);
+  }
+
 
   /**
    * Get the lead from the amoCRM using ID
@@ -43,10 +58,11 @@ class LeadAggregator extends GeneralAggregator {
     $this->clear();
     if ($result = parent::_get('leads', $id)) {
       foreach ($result as $one_item) {
-        $this->append(new Lead($one_item, $this->field_config));
+        $this->append($this->createObject($one_item, $this->field_config));
       }
       $iterator = $this->getIterator();
       $iterator->rewind();
+
       return $iterator->current();
     }
 

@@ -8,6 +8,7 @@
 
 namespace AmoCrm\Client\Aggregator;
 
+use AmoCrm\Client\CustomField\FieldConfig;
 use AmoCrm\Client\Exception\AggregatorMethodNotSupportedException;
 
 use AmoCrm\Client\Object\Note;
@@ -35,14 +36,26 @@ class NoteAggregator extends GeneralAggregator {
     $this->clear();
     if ($result = parent::_get('notes', $id)) {
       foreach ($result as $one_item) {
-        $this->append(new Note($one_item));
+        $this->append($this->createObject($one_item));
       }
       $iterator = $this->getIterator();
       $iterator->rewind();
+
       return $iterator->current();
     }
 
     return NULL;
+  }
+
+  /**
+   * Creates entity object.
+   *
+   * @param array $data
+   * @param \AmoCrm\Client\CustomField\FieldConfig|NULL $field_config
+   * @return Note
+   */
+  protected function createObject(array $data, FieldConfig $field_config = NULL) {
+    return new Note($data, $field_config);
   }
 
   /**

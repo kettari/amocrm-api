@@ -109,7 +109,8 @@ class Api {
   /**
    * Create leads aggregator object
    *
-   * @return LeadAggregator
+   * @param \AmoCrm\Client\Request $request
+   * @return \AmoCrm\Client\Aggregator\LeadAggregator
    */
   public function getLeadAggregator(Request $request) {
     return new LeadAggregator($this->logger, $this->field_config, $request);

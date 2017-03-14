@@ -56,6 +56,7 @@ class GeneralCustomField {
     if (!is_null($this->enum)) {
       $result['values'][0]['enum'] = $this->enum;
     }
+
     return $result;
   }
 
@@ -64,6 +65,13 @@ class GeneralCustomField {
    */
   public function getValue() {
     return $this->value;
+  }
+
+  /**
+   * @return string
+   */
+  public function setValue($value) {
+    $this->value = $value;
   }
 
 }

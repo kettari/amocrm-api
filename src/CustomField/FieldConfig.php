@@ -26,6 +26,9 @@ class FieldConfig {
   protected $field_email_enum_work;
   protected $field_email_enum_other;
 
+  // Other custom-custom fields
+  protected $custom_field_ids = [];
+
   /**
    * @return mixed
    */
@@ -39,6 +42,7 @@ class FieldConfig {
    */
   public function setFieldPhoneId($field_phone_id) {
     $this->field_phone_id = $field_phone_id;
+
     return $this;
   }
 
@@ -55,6 +59,7 @@ class FieldConfig {
    */
   public function setFieldPhoneEnumMob($field_phone_enum_mob) {
     $this->field_phone_enum_mob = $field_phone_enum_mob;
+
     return $this;
   }
 
@@ -71,6 +76,7 @@ class FieldConfig {
    */
   public function setFieldPhoneEnumWork($field_phone_enum_work) {
     $this->field_phone_enum_work = $field_phone_enum_work;
+
     return $this;
   }
 
@@ -104,6 +110,7 @@ class FieldConfig {
    */
   public function setFieldPhoneEnumHome($field_phone_enum_home) {
     $this->field_phone_enum_home = $field_phone_enum_home;
+
     return $this;
   }
 
@@ -120,6 +127,7 @@ class FieldConfig {
    */
   public function setFieldPhoneEnumOther($field_phone_enum_other) {
     $this->field_phone_enum_other = $field_phone_enum_other;
+
     return $this;
   }
 
@@ -136,6 +144,7 @@ class FieldConfig {
    */
   public function setFieldPhoneEnumFax($field_phone_enum_fax) {
     $this->field_phone_enum_fax = $field_phone_enum_fax;
+
     return $this;
   }
 
@@ -152,6 +161,7 @@ class FieldConfig {
    */
   public function setFieldEmailId($field_email_id) {
     $this->field_email_id = $field_email_id;
+
     return $this;
   }
 
@@ -168,6 +178,7 @@ class FieldConfig {
    */
   public function setFieldEmailEnumPriv($field_email_enum_priv) {
     $this->field_email_enum_priv = $field_email_enum_priv;
+
     return $this;
   }
 
@@ -184,6 +195,7 @@ class FieldConfig {
    */
   public function setFieldEmailEnumWork($field_email_enum_work) {
     $this->field_email_enum_work = $field_email_enum_work;
+
     return $this;
   }
 
@@ -200,7 +212,27 @@ class FieldConfig {
    */
   public function setFieldEmailEnumOther($field_email_enum_other) {
     $this->field_email_enum_other = $field_email_enum_other;
+
     return $this;
+  }
+
+  /**
+   * @param $id
+   * @param $name
+   * @return FieldConfig
+   */
+  public function setCustomFieldId($name, $id) {
+    $this->custom_field_ids[$name] = $id;
+
+    return $this;
+  }
+
+  /**
+   * @param $name
+   * @return mixed|null
+   */
+  public function getCustomFieldId($name) {
+    return isset($this->custom_field_ids[$name]) ? $this->custom_field_ids[$name] : NULL;
   }
 
 

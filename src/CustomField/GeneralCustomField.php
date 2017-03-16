@@ -68,7 +68,8 @@ class GeneralCustomField {
   }
 
   /**
-   * @return string
+   * @param mixed $value
+   * @return void
    */
   public function setValue($value) {
     $this->value = $value;

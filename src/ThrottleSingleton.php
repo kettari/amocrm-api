@@ -208,12 +208,12 @@ class ThrottleSingleton {
    *
    * @return int
    */
-  public function getIdletime() {
+  public function getIdleTime() {
     return $this->idle_time;
   }
 
   /**
-   * Returns queue lenth peak.
+   * Returns queue length peak.
    *
    * @return int
    */

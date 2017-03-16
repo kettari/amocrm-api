@@ -75,12 +75,18 @@ class Contact extends AbstractTaggableEntity {
       // Check each custom field ID
       switch ($field['id']) {
         case $field_config->getFieldPhoneId():
-          $this->phones[] = PhoneFieldFactory::build($field_config,
-            $field['values'][0]['enum'], $field['values'][0]['value']);
+          // Iterate all enum elements
+          foreach ($field['values'] as $item) {
+            $this->phones[] = PhoneFieldFactory::build($field_config,
+              $item['enum'], $item['value']);
+          }
           break;
         case $field_config->getFieldEmailId():
-          $this->emails[] = EmailFieldFactory::build($field_config,
-            $field['values'][0]['enum'], $field['values'][0]['value']);
+          // Iterate all enum elements
+          foreach ($field['values'] as $item) {
+            $this->emails[] = EmailFieldFactory::build($field_config,
+              $item['enum'], $item['value']);
+          }
           break;
       }
     }

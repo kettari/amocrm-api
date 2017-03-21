@@ -28,6 +28,10 @@ abstract class AbstractTaggableEntity extends AbstractTimeAwareEntity {
 
     if (isset($data['tags'])) {
       if (is_array($data['tags'])) {
+
+        // Unset possible tags set by parent
+        $this->tags = [];
+
         foreach ($data['tags'] as $tag_item) {
           if (isset($tag_item['id'])) {
             $this->tags[$tag_item['id']] = $tag_item['name'];

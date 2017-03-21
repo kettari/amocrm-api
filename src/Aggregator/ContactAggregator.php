@@ -112,7 +112,7 @@ class ContactAggregator extends GeneralAggregator {
    * @throws \AmoCrm\Client\Exception\ResponseAggregatorException
    */
   protected function save($operation, Contact $contact) {
-    $this->logger->debug('Saving contact', ['contact' => print_r($contact, TRUE)]);
+    //$this->logger->debug('Saving contact', ['contact' => print_r($contact, TRUE)]);
     if ($result = parent::_save('contacts', $operation,
       [$contact->toArray()])
     ) {

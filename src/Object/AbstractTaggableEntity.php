@@ -38,7 +38,7 @@ abstract class AbstractTaggableEntity extends AbstractTimeAwareEntity {
           }
         }
       } else {
-        $this->tags = $data['tags'];
+        $this->tags = [$data['tags']];
       }
     }
   }

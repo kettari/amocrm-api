@@ -51,12 +51,15 @@ abstract class GeneralAggregator extends ArrayObject {
   }
 
   /**
-   * Clear items
+   * Clears items in the internal collection. Does not change state of items
+   * in the data provider.
+   *
+   * @see http://php.net/manual/en/arrayiterator.offsetunset.php#104789
+   * @return void
    */
   public function clear() {
     $iterator = $this->getIterator();
-    foreach ($iterator as $key => $item) {
-      $iterator->offsetUnset($key);
+    for ($iterator->rewind(); $iterator->valid(); $iterator->offsetUnset($iterator->key())) {
     }
   }
 

@@ -61,6 +61,11 @@ class Request {
   protected $id;
 
   /**
+   * @var string
+   */
+  protected $with;
+
+  /**
    * @var int
    */
   protected $page_number = 1;
@@ -198,6 +203,10 @@ class Request {
     // If id defined, concatenate it
     if (!empty($this->id)) {
       $uri .= sprintf('&id[]=%s', urlencode($this->id));
+    }
+
+    if (!empty($this->with)) {
+      $uri .= sprintf('&with[]=%s', urlencode($this->with));
     }
 
     return $uri;
@@ -382,5 +391,25 @@ class Request {
    */
   public function getThrottleController() {
     return $this->throttle_controller;
+  }
+
+  /**
+   * @return string
+   */
+  public function getWith(): string
+  {
+    return $this->with;
+  }
+
+  /**
+   * @param string $with
+   *
+   * @return $this
+   */
+  public function setWith(string $with)
+  {
+    $this->with = $with;
+
+    return $this;
   }
 }

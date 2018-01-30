@@ -206,7 +206,7 @@ class Request {
     }
 
     if (!empty($this->with)) {
-      $uri .= sprintf('&with[]=%s', urlencode($this->with));
+      $uri .= sprintf('&with=%s', urlencode($this->with));
     }
 
     return $uri;

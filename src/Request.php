@@ -63,7 +63,12 @@ class Request {
   /**
    * @var string
    */
-  protected $with;
+  private $with;
+
+  /**
+   * @var array
+   */
+  private $headers = [];
 
   /**
    * @var int
@@ -169,8 +174,15 @@ class Request {
     curl_setopt($this->handler, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($this->handler, CURLOPT_USERAGENT,
       'kettari-amocrm-api-client/1.0');
-    curl_setopt($this->handler, CURLOPT_HTTPHEADER,
-      ['Accept: application/json']);
+
+    /**
+     * Headers
+     * include IF-MODIFIED-SINCE
+     */
+    $headers = $this->getHeaders();
+    $headers[] = 'Accept: application/json';
+    curl_setopt($this->handler, CURLOPT_HTTPHEADER, $headers);
+
     curl_setopt($this->handler, CURLOPT_HEADER, FALSE);
     curl_setopt($this->handler, CURLOPT_SSL_VERIFYPEER, 0);
     curl_setopt($this->handler, CURLOPT_SSL_VERIFYHOST, 0);
@@ -409,6 +421,26 @@ class Request {
   public function setWith(string $with)
   {
     $this->with = $with;
+
+    return $this;
+  }
+
+  /**
+   * @return array
+   */
+  public function getHeaders(): array
+  {
+    return $this->headers;
+  }
+
+  /**
+   * @param string $header
+   *
+   * @return $this
+   */
+  public function addHeaders(string $header)
+  {
+    $this->headers[] = $header;
 
     return $this;
   }

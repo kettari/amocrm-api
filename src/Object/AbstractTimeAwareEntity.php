@@ -16,7 +16,7 @@ abstract class AbstractTimeAwareEntity extends AbstractIdentifiableEntity {
    *
    * @var int
    */
-  protected $date_create;
+  protected $created_at;
 
   /**
    * Unix timestamp
@@ -48,7 +48,7 @@ abstract class AbstractTimeAwareEntity extends AbstractIdentifiableEntity {
     parent::__construct($data);
 
     // Creation date - now
-    $this->date_create = $this->date_create ?: time();
+    $this->created_at = $this->created_at ?: time();
     $this->last_modified = $this->last_modified ?: time();
   }
 
@@ -59,7 +59,7 @@ abstract class AbstractTimeAwareEntity extends AbstractIdentifiableEntity {
    */
   public function toArray() {
     return array_merge(parent::toArray(), [
-      'date_create'         => $this->getDateCreate(),
+      'created_at'         => $this->getDateCreate(),
       'last_modified'       => $this->getLastModified(),
       'responsible_user_id' => $this->getResponsibleUserId(),
       'created_user_id'     => $this->getCreatedUserId(),
@@ -70,15 +70,15 @@ abstract class AbstractTimeAwareEntity extends AbstractIdentifiableEntity {
    * @return int
    */
   public function getDateCreate() {
-    return $this->date_create;
+    return $this->created_at;
   }
 
   /**
-   * @param int $date_create
+   * @param int $created_at
    * @return AbstractTimeAwareEntity
    */
-  public function setDateCreate($date_create) {
-    $this->date_create = $date_create;
+  public function setDateCreate($created_at) {
+    $this->created_at = $created_at;
 
     return $this;
   }

@@ -153,7 +153,7 @@ abstract class GeneralAggregator extends ArrayObject {
 
     // Configure request
     $current_page = 0;
-    $this->request->setMethod(sprintf('/private/api/v2/json/%s/list',
+    $this->request->setMethod(sprintf('/api/v2/%s',
       $entity_type))
       ->setPageSize($page_size)
       ->setQuery($query)

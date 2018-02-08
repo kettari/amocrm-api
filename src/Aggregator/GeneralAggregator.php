@@ -8,7 +8,6 @@
 
 namespace AmoCrm\Client\Aggregator;
 
-
 use AmoCrm\Client\CustomField\FieldConfig;
 use AmoCrm\Client\Exception\IdentifierAggregatorException;
 use AmoCrm\Client\Exception\ResponseAggregatorException;
@@ -17,6 +16,7 @@ use AmoCrm\Client\Exception\UnknownOperationAggregatorException;
 use AmoCrm\Client\Request;
 use ArrayObject;
 use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 abstract class GeneralAggregator extends ArrayObject
 {
@@ -41,12 +41,12 @@ abstract class GeneralAggregator extends ArrayObject
   /**
    * Loggable constructor.
    *
-   * @param \Monolog\Logger $logger
+   * @param LoggerInterface $logger
    * @param \AmoCrm\Client\CustomField\FieldConfig $field_config
    * @param \AmoCrm\Client\Request $request
    */
   public function __construct(
-    Logger $logger,
+    LoggerInterface $logger,
     FieldConfig $field_config,
     Request $request
   ) {

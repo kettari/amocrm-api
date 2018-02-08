@@ -56,6 +56,23 @@ class ContactAggregator extends GeneralAggregator {
   }
 
   /**
+   * @return bool
+   */
+  public function getList()
+  {
+    $this->clear();
+    if ($result = parent::_load('contacts', null, 500)) {
+      foreach ($result as $one_item) {
+        $this->append($this->createObject($one_item, $this->field_config));
+      }
+
+      return TRUE;
+    }
+
+    return FALSE;
+  }
+
+  /**
    * Creates entity object.
    *
    * @param array $data

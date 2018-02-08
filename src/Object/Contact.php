@@ -42,7 +42,7 @@ class Contact extends AbstractTaggableEntity {
    *
    * @var array
    */
-  protected $linked_leads_id = [];
+  protected $leads = [];
 
   /**
    * Contact constructor.
@@ -59,6 +59,12 @@ class Contact extends AbstractTaggableEntity {
         case 'custom_fields':
           $this->constructCustomFields($val, $field_config);
           continue;
+          break;
+        case 'leads':
+          $ids = $val['id'] ?? [];
+          $this->setLinkedLeadsId($ids);
+          continue;
+          break;
       }
     }
   }
@@ -183,7 +189,7 @@ class Contact extends AbstractTaggableEntity {
    * @return array
    */
   public function getLinkedLeadsId() {
-    return $this->linked_leads_id;
+    return $this->leads;
   }
 
   /**
@@ -191,7 +197,7 @@ class Contact extends AbstractTaggableEntity {
    * @return Contact
    */
   public function setLinkedLeadsId($linked_leads_id) {
-    $this->linked_leads_id = $linked_leads_id;
+    $this->leads = $linked_leads_id;
 
     return $this;
   }

@@ -14,7 +14,7 @@ use AmoCrm\Client\CustomField\FieldConfig;
 use AmoCrm\Client\CustomField\PhoneCustomField;
 use AmoCrm\Client\CustomField\PhoneFieldFactory;
 
-class Contact extends AbstractTaggableEntity {
+class Contact extends AbstractDeletableEntity {
 
   /**
    * Contact name

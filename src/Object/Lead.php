@@ -8,8 +8,7 @@
 
 namespace AmoCrm\Client\Object;
 
-
-class Lead extends AbstractTaggableEntity {
+class Lead extends AbstractDeletableEntity {
 
   /**
    * Price of the lead
